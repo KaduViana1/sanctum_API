@@ -9,8 +9,6 @@ use App\Traits\HttpResponses;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 
-use function Laravel\Prompts\error;
-
 class AuthController extends Controller
 {
     use HttpResponses;
@@ -19,7 +17,7 @@ class AuthController extends Controller
     {
         $request->validated($request->all());
 
-        if (!Auth::attempt($request->only(['email', 'password']))) {
+        if (! Auth::attempt($request->only(['email', 'password']))) {
             return $this->error('', 'Wrong credentials', 401);
         }
 
@@ -27,7 +25,7 @@ class AuthController extends Controller
 
         return $this->success([
             'user' => $user,
-            'token' => $user->createToken('Api Token of ' . $user->name)->plainTextToken
+            'token' => $user->createToken('Api Token of '.$user->name)->plainTextToken,
         ]);
     }
 
@@ -38,12 +36,12 @@ class AuthController extends Controller
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => Hash::make($request->password)
+            'password' => Hash::make($request->password),
         ]);
 
         return $this->success([
             'user' => $user,
-            'token' => $user->createToken('API Token of ' . $user->name)->plainTextToken
+            'token' => $user->createToken('API Token of '.$user->name)->plainTextToken,
         ]);
     }
 
@@ -52,7 +50,7 @@ class AuthController extends Controller
         Auth::user()->currentAccessToken->delete();
 
         return $this->success([
-            'message' => "Successfully logged out"
+            'message' => 'Successfully logged out',
         ]);
     }
 }

@@ -4,14 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreTaskRequest;
 use App\Http\Resources\TasksResource;
-use App\Traits\HttpResponses;
 use App\Models\Task;
+use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 class TasksController extends Controller
 {
     use HttpResponses;
+
     /**
      * Display a listing of the resource.
      */
@@ -33,7 +34,7 @@ class TasksController extends Controller
             'user_id' => Auth::user()->id,
             'name' => $request->name,
             'description' => $request->description,
-            'priority' => $request->priority
+            'priority' => $request->priority,
         ]);
 
         return new TasksResource($task);
@@ -45,7 +46,7 @@ class TasksController extends Controller
     public function show(Task $task)
     {
 
-        return $this->isNotAuthorized($task) ?  $this->isNotAuthorized($task) : new TasksResource($task);
+        return $this->isNotAuthorized($task) ? $this->isNotAuthorized($task) : new TasksResource($task);
     }
 
     /**
@@ -55,7 +56,7 @@ class TasksController extends Controller
     {
 
         if (Auth::user()->id !== $task->user_id) {
-            return $this->error('', "Not authorized", 403);
+            return $this->error('', 'Not authorized', 403);
         }
         $task->update($request->all());
 
@@ -73,7 +74,7 @@ class TasksController extends Controller
     private function isNotAuthorized($task)
     {
         if (Auth::user()->id !== $task->user_id) {
-            return $this->error('', "Not authorized", 403);
+            return $this->error('', 'Not authorized', 403);
         }
     }
 }
